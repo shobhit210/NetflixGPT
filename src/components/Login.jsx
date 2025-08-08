@@ -1,11 +1,39 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Header from "./Header";
+import { checkValidData } from "../utils/validate";
 
 const Login = () => {
   const [signInForm, setSignInForm] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
+  const name = useRef(null);
+  const email = useRef(null);
+  const password = useRef(null);
+
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    // Logic to handle sign-in or sign-up
+    console.log(name.current.value);
+    console.log(email.current.value);
+    console.log(password.current.value);
+
+    const message = checkValidData(
+      name.current.value,
+      email.current.value,
+      password.current.value
+    );
+    console.log("MESSAGE", message);
+
+    if (message) {
+      setErrorMessage(message);
+    } else {
+      setErrorMessage("");
+      // Proceed with sign-in or sign-up
+    }
+  };
+
+  // Logic to toggle sign-in form visibility
   const toggleSignInForm = () => {
-    // Logic to toggle sign-in form visibility
     setSignInForm(!signInForm);
   };
 
@@ -25,24 +53,31 @@ const Login = () => {
         </h1>
         {!signInForm && (
           <input
+            ref={name}
             type="text"
             placeholder="Full Name"
             className="p-4 m-2 border border-gray-500 w-full rounded-sm"
           />
         )}
         <input
+          ref={email}
           type="email"
           placeholder="Email"
           className="p-4 m-2 border border-gray-500 w-full rounded-sm"
         />
         <input
+          ref={password}
           type="password"
           placeholder="Password"
           className="p-4 m-2 border border-gray-500 w-full rounded-sm"
         />
+        {errorMessage && (
+          <p className="text-red-500 m-2 font-bold">{errorMessage}</p>
+        )}
         <button
           type="submit"
           className="p-3 mx-2 my-4 bg-red-500 hover:bg-red-700 cursor-pointer w-full rounded-sm"
+          onClick={handleButtonClick}
         >
           {signInForm ? "Sign In" : "Sign Up"}
         </button>
