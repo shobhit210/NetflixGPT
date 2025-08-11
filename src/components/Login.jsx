@@ -13,16 +13,12 @@ const Login = () => {
   const handleButtonClick = (e) => {
     e.preventDefault();
     // Logic to handle sign-in or sign-up
-    console.log(name.current.value);
-    console.log(email.current.value);
-    console.log(password.current.value);
 
     const message = checkValidData(
-      name.current.value,
-      email.current.value,
-      password.current.value
+      name?.current?.value,
+      email?.current?.value,
+      password?.current?.value
     );
-    console.log("MESSAGE", message);
 
     if (message) {
       setErrorMessage(message);
