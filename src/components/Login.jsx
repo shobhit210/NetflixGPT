@@ -5,11 +5,15 @@ import { auth } from "../utils/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [signInForm, setSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -42,8 +46,19 @@ const Login = () => {
           .then((userCredential) => {
             const user = userCredential.user;
             console.log("User signed up:", user);
-            navigate("/browse");
-            // ...
+            updateProfile(user, {
+              displayName: name?.current?.value,
+              photoURL:
+                "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y",
+            })
+              .then(() => {
+                const { uid, email, displayName, photoURL } = auth.currentUser;
+                dispatch(addUser({ uid, email, displayName, photoURL }));
+                navigate("/browse");
+              })
+              .catch((error) => {
+                setErrorMessage(error.message);
+              });
           })
           .catch((error) => {
             const errorCode = error.code;
